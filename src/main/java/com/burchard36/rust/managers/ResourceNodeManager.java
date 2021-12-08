@@ -46,17 +46,19 @@ public class ResourceNodeManager {
         this.runningTask.cancel();
     }
 
-    public final void checkNode(final Block block) {
+    public final JsonResourceNode checkNode(final Block block) {
         final JsonResourceNode node = this.getNodeByLocation(block.getLocation());
         if (node == null) {
             Logger.debug("Block broken was not a Resource Node", this.pluginInstance);
-            return;
+            return null;
         }
 
         if (!node.stillExists()) {
             Logger.debug("The node no longer exists! Regenerating. . .", this.pluginInstance);
             this.nodeGenerator.regenerateNode(node);
         } else Logger.debug("The node still exists!", this.pluginInstance);
+
+        return node;
     }
 
     public final JsonResourceNode getNodeByLocation(final Location loc) {

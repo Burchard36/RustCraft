@@ -1,13 +1,17 @@
 package com.burchard36.rust.config;
 
+import com.burchard36.Logger;
+import com.burchard36.inventory.ItemWrapper;
 import com.burchard36.rust.Rust;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Biome;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,6 +84,46 @@ public class DefaultYamlConfig extends YamlConfiguration {
         if (world != null) return world;
         world = new WorldCreator(worldName).createWorld();
         return world;
+    }
+
+    public final List<Material> getBreakableMaterials() {
+        final List<Material> breakableMaterial = new ArrayList<>();
+        this.getStringList("WorldSettings.BreakableBlocks").forEach((stringMaterial) ->
+                breakableMaterial.add(Material.getMaterial(stringMaterial)));
+        return breakableMaterial;
+    }
+
+    public final List<Material> getInteractableMaterials() {
+        final List<Material> interactableMaterial = new ArrayList<>();
+        this.getStringList("WorldSettings.InteractableBlocks").forEach((stringMaterial) ->
+                interactableMaterial.add(Material.getMaterial(stringMaterial)));
+        return interactableMaterial;
+    }
+
+    public final ItemWrapper getUncookedSulfurItem() {
+        return this.getWrapperFromPath("Items.Sulfur.Ore");
+    }
+
+    public int getRockDropAmount() {
+        return this.getInt("Items.Rock.HarvestAmount");
+    }
+
+    private ItemWrapper getWrapperFromPath(final String path) {
+        ItemStack stack = new ItemStack(Material.DIRT);
+        ItemWrapper wrapper = new ItemWrapper(stack);
+        final ConfigurationSection sec = this.getConfigurationSection(path);
+        if (sec == null) {
+            Logger.error("Section was null when loading item from config, path: " + path);
+            return null;
+        }
+        for (final String key : sec.getKeys(false)) {
+            if (key.equalsIgnoreCase("Material")) stack.setType(Material.getMaterial(sec.getString(key)));
+            if (key.equalsIgnoreCase("Name")) wrapper.setDisplayName(sec.getString(key));
+            if (key.equalsIgnoreCase("Lore")) wrapper.setItemLore(sec.getStringList(key));
+            if (key.equalsIgnoreCase("CustomModelData")) wrapper.setModelData(sec.getInt(key));
+        }
+
+        return wrapper;
     }
 
     public final int maxSulfurNodes() {

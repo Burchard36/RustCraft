@@ -18,9 +18,9 @@ WorldSettings:
   MaxMetalNodes: 180
   MaxSulfurNodes: 150
 
-  MaxNodeGenerationX: 100
+  MaxNodeGenerationX: 767
   #767
-  MaxNodeGenerationZ: 100
+  MaxNodeGenerationZ: 767
   #767
 
   DenyBlocksUnderNode:
@@ -39,4 +39,27 @@ WorldSettings:
     - "DRIPSTONE_BLOCK"
     - "DEEPSLATE_GOLD_ORE"
     - "DEEPSLATE_IRON_ORE"
+  BreakableBlocks:
+    - "DRIPSTONE_BLOCK"
+    - "DEEPSLATE_GOLD_ORE"
+    - "DEEPSLATE_IRON_ORE"
+Items:
 
+  Sulfur:
+    Ore:
+      CustomModelData: 77321 # Dont change this dude
+      Material: RAW_GOLD
+      Name: "&e&l&oUncooked Sulfur"
+      Lore:
+        - "&f "
+        - "&e&oPut this into a furnace to refine it to"
+        - "&e&l&oCooked Sulfur&7&o useful for bullets and explosives!"
+    Cooked:
+      CustomModelData: 77322 #Dont change this dude
+      Material: GOLD_INGOT
+  Stone:
+    Ore:
+      CustomModelData: 77323 # Dont change this dude
+      RawCopper: "RAW_COPPER"
+  Rock:
+    HarvestAmount: 2

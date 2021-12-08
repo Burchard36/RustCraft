@@ -3,16 +3,19 @@ package com.burchard36.rust;
 import com.burchard36.Api;
 import com.burchard36.ApiLib;
 import com.burchard36.Logger;
+import com.burchard36.inventory.ItemWrapper;
 import com.burchard36.rust.commands.RustCommandHandler;
 import com.burchard36.rust.config.DefaultYamlConfig;
 import com.burchard36.rust.data.DataManager;
 import com.burchard36.rust.data.NodeType;
 import com.burchard36.rust.events.RustListenerHandler;
+import com.burchard36.rust.lib.RustItem;
 import com.burchard36.rust.managers.ResourceNodeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Random;
@@ -68,6 +71,17 @@ public final class Rust extends JavaPlugin implements Api {
         final int randomZ = getRandom(min);
         final int randomY = world.getHighestBlockYAt(randomX, randomZ);
         return new Location(world, randomX, randomY, randomZ);
+    }
+
+    public static int getHarvestAmountOf(final ItemStack stack) {
+        final ItemWrapper wrapper = new ItemWrapper(stack);
+
+        if (wrapper.getStringDataValue("rust_item") == null) return 1;
+
+        final String rustItem = wrapper.getStringDataValue("rust_item");
+
+        if (rustItem.equalsIgnoreCase(RustItem.ROCK.getName())) return INSTANCE.getDefaultYamlConfig().getRockDropAmount();
+        return 1;
     }
 
     public static Material getNodeMaterial(final NodeType  nodeType) {
