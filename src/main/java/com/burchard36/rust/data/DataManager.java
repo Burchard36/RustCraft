@@ -38,7 +38,7 @@ public class DataManager {
         }
 
         for (final File nodeFile : nodeDirectory) {
-            if (nodeFile.getName().endsWith(".json")) {
+            if (!nodeFile.getName().endsWith(".json")) {
                 Logger.warn("You have a file in /data/nodes that is not a .json file! Please remove this dude!");
                 continue;
             }

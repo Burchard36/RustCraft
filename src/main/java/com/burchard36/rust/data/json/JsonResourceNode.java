@@ -33,7 +33,7 @@ public class JsonResourceNode extends JsonDataFile {
     }
 
     public JsonResourceNode(final UUID uuid) {
-        super(Rust.INSTANCE, "/data/nodes" + uuid.toString() + ".json");
+        super(Rust.INSTANCE, "/data/nodes/" + uuid.toString() + ".json");
         this.nodeUuid = uuid.toString();
     }
 
