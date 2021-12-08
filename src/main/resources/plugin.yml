@@ -1,0 +1,4 @@
+name: Rust
+version: '${project.version}'
+main: com.burchard36.rust.Rust
+api-version: 1.17

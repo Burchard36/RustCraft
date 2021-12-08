@@ -1,0 +1,42 @@
+# If this is true you get Debug Logs in your console, this may be a big spammy
+DebugMode: true
+
+NodeSettings:
+
+  # Time in minutes nodes should reset
+  ResetTimer: 5
+
+WorldSettings:
+
+  UseWorld: "Rust"
+
+  StoneMaterial: DRIPSTONE_BLOCK
+  MetalMaterial: DEEPSLATE_IRON_ORE
+  SulfurMaterial: DEEPSLATE_GOLD_ORE
+
+  MaxStoneNodes: 500
+  MaxMetalNodes: 180
+  MaxSulfurNodes: 150
+
+  MaxNodeGenerationX: 100
+  #767
+  MaxNodeGenerationZ: 100
+  #767
+
+  DenyBlocksUnderNode:
+    - "WATER"
+
+
+  DenyStoneBiomeNodeSpawn:
+    - "BEACH"
+  DenyMetalBiomeNodeSpawn:
+    - "BEACH"
+  DenySulfurBiomeNodeSpawn:
+    - "BEACH"
+    - "PLAINS"
+
+  InteractableBlocks:
+    - "DRIPSTONE_BLOCK"
+    - "DEEPSLATE_GOLD_ORE"
+    - "DEEPSLATE_IRON_ORE"
+
