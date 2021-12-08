@@ -1,6 +1,5 @@
 package com.burchard36.rust.config;
 
-import com.burchard36.Logger;
 import com.burchard36.rust.Rust;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

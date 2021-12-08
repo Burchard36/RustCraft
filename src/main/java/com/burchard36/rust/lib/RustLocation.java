@@ -20,7 +20,7 @@ public class RustLocation {
     @SerializedName(value = "world_uuid")
     public String worldUuid;
 
-    private transient Location spigotLocation;
+    public transient Location spigotLocation;
 
     public RustLocation(final Location location) {
         this.spigotLocation = location;
@@ -35,5 +35,11 @@ public class RustLocation {
         if (spigotLocation != null) return this.spigotLocation;
         this.spigotLocation = new Location(Bukkit.getWorld(UUID.fromString(this.worldUuid)), this.x, this.y, this.z);
         return this.spigotLocation.clone();
+    }
+
+    public final boolean isTheSame(final Location loc) {
+        if (loc.getBlockX() != this.x) return false;
+        if (loc.getBlockZ() != this.z) return false;
+        return loc.getBlockY() == this.y;
     }
 }

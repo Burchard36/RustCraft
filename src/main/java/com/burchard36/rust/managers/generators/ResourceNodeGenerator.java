@@ -62,7 +62,7 @@ public class ResourceNodeGenerator {
     private void generateStoneNodes() {
         while (currentStoneNodes < this.maxStoneNodes) {
             Logger.debug("Attempting to create Stone Node. . .", Rust.INSTANCE);
-            if (!generateNode(NodeType.STONE)) continue;
+            if (generateNode(NodeType.STONE)) continue;
 
             currentStoneNodes++;
         }
@@ -71,7 +71,7 @@ public class ResourceNodeGenerator {
     private void generateMetalNodes() {
         while (currentMetalNodes <= this.maxMetalNodes) {
             Logger.debug("Attempting to create Metal Node. . .", Rust.INSTANCE);
-            if (!generateNode(NodeType.METAL)) continue;
+            if (generateNode(NodeType.METAL)) continue;
 
             currentMetalNodes++;
         }
@@ -80,9 +80,21 @@ public class ResourceNodeGenerator {
     private void generateSulfurNodes() {
         while (currentSulfurNodes <= this.maxSulfurNodes) {
             Logger.debug("Attempting to create Sulfur Node. . .", Rust.INSTANCE);
-            if (!generateNode(NodeType.SULFUR)) continue;
+            if (generateNode(NodeType.SULFUR)) continue;
 
             currentSulfurNodes++;
+        }
+    }
+
+    public final void regenerateNode(final JsonResourceNode node) {
+        final Location spigotLocation = Rust.getRandomLocation(this.currentWorld, this.maxGenerationX, this.maxGenerationZ)
+                .add(0, 1, 0);
+        node.setNewRootLocation(spigotLocation);
+        if (this.canNodeGenerate(node)) {
+            this.regenerateNode(node);
+        } else {
+            node.createNode(this.config);
+            Logger.debug("Successfully regenerated Node!", Rust.INSTANCE);
         }
     }
 
@@ -92,26 +104,32 @@ public class ResourceNodeGenerator {
         final RustLocation location = new RustLocation(spigotLocation);
         final JsonResourceNode node = new JsonResourceNode(type, location, UUID.randomUUID());
 
+        if (this.canNodeGenerate(node)) return true;
+
+        node.createNode(this.config);
+        this.nodeManager.registerNode(node);
+        Logger.debug("Node with type: " + type.name() + " was spawned in world: " + location.worldUuid +
+                "at location X: " + location.x + " Y: " + location.y + " Z: " + location.z, Rust.INSTANCE);
+        return false;
+    }
+
+    private boolean canNodeGenerate(final JsonResourceNode node) {
         if (!node.canGenerate()) {
             Logger.debug("Canceling node generation because node is not able to generate!", Rust.INSTANCE);
-            return false;
+            return true;
         }
 
         if (!node.biomeCheck(this.config)) {
-            Logger.debug("Canceling node generation because node does not respect its biome check!", Rust.INSTANCE);
-            return false;
+            Logger.debug("Canceling node generation because node does not respect its biomes check!", Rust.INSTANCE);
+            return true;
         }
 
         if (!node.blockCheck(this.config)) {
             Logger.debug("Canceling node generation because node does not respect its block check!", Rust.INSTANCE);
-            return false;
+            return true;
         }
 
-        node.createNode(this.config);
-        this.nodeManager.registerNode(node);
-        Logger.debug("Node with type: " + type.name() + " was spawned in world: " + location.worldUuid.toString() +
-                "at location X: " + location.x + " Y: " + location.y + " Z: " + location.z, Rust.INSTANCE);
-        return true;
+        return false;
     }
 
 }

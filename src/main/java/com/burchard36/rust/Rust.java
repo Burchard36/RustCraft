@@ -2,12 +2,16 @@ package com.burchard36.rust;
 
 import com.burchard36.Api;
 import com.burchard36.ApiLib;
+import com.burchard36.Logger;
 import com.burchard36.rust.commands.RustCommandHandler;
 import com.burchard36.rust.config.DefaultYamlConfig;
 import com.burchard36.rust.data.DataManager;
+import com.burchard36.rust.data.NodeType;
 import com.burchard36.rust.events.RustListenerHandler;
+import com.burchard36.rust.managers.ResourceNodeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,18 +42,25 @@ public final class Rust extends JavaPlugin implements Api {
     public void onDisable() {
         INSTANCE = null;
         listenerHandler.unregisterAll();
+        this.dataManager.getNodeManager().shutdown();
+        this.dataManager.shutdown();
+        Logger.log("DataManager successfully saved data");
     }
 
     public void reloadPluginConfigs() {
         this.defaultYamlConfig = new DefaultYamlConfig(this);
     }
 
-    public final DefaultYamlConfig getDefaultYamlConfig() {
+    public DefaultYamlConfig getDefaultYamlConfig() {
         return this.defaultYamlConfig;
     }
 
-    public final ApiLib getLib() {
+    public ApiLib getLib() {
         return this.lib;
+    }
+
+    public ResourceNodeManager getNodeManager() {
+        return this.dataManager.getNodeManager();
     }
 
     public static Location getRandomLocation(final World world, final int max, final int min) {
@@ -57,6 +68,21 @@ public final class Rust extends JavaPlugin implements Api {
         final int randomZ = getRandom(min);
         final int randomY = world.getHighestBlockYAt(randomX, randomZ);
         return new Location(world, randomX, randomY, randomZ);
+    }
+
+    public static Material getNodeMaterial(final NodeType  nodeType) {
+        switch (nodeType) {
+            case STONE -> {
+                return INSTANCE.defaultYamlConfig.getStoneWorldMaterial();
+            }
+            case SULFUR -> {
+                return INSTANCE.getDefaultYamlConfig().getSulfurWorldMaterial();
+            }
+            case METAL -> {
+                return INSTANCE.getDefaultYamlConfig().getMetalWorldMaterial();
+            }
+        }
+        return INSTANCE.defaultYamlConfig.getStoneWorldMaterial();
     }
 
     private static int getRandom(final int max) {

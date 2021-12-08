@@ -5,6 +5,8 @@ import com.burchard36.json.PluginDataMap;
 import com.burchard36.rust.Rust;
 import com.burchard36.rust.data.json.JsonResourceNode;
 import com.burchard36.rust.managers.ResourceNodeManager;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.UUID;
@@ -12,7 +14,7 @@ import java.util.UUID;
 public class DataManager {
 
     private final Rust pluginInstance;
-
+    private final BukkitTask saveTask;
     private final ResourceNodeManager nodeManager;
     private final PluginDataMap resourceNodeMap;
 
@@ -23,6 +25,21 @@ public class DataManager {
 
         this.loadResourceNodes();
         this.nodeManager = new ResourceNodeManager(this.resourceNodeMap, this.pluginInstance);
+
+        this.saveTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Logger.log("Saving all Resource node-data asynchronously. . .");
+                resourceNodeMap.saveAll();
+                Logger.log("Finished saving Resource node-data!");
+            }
+        }.runTaskTimerAsynchronously(this.pluginInstance, (20 * 60) * 5, (20 * 60) * 5);
+    }
+
+    public final void shutdown() {
+        Logger.log("Shutting down DataManager. . .");
+        this.saveTask.cancel();
+        this.resourceNodeMap.saveAll();
     }
 
     private void loadResourceNodes() {
@@ -48,6 +65,7 @@ public class DataManager {
             final UUID uuid = UUID.fromString(fileNameUuid);
 
             this.resourceNodeMap.loadDataFile(uuid.toString(), new JsonResourceNode(uuid));
+
         }
     }
 
