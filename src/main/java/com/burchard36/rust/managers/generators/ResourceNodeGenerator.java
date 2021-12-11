@@ -10,19 +10,21 @@ import com.burchard36.rust.managers.ResourceNodeManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
 public class ResourceNodeGenerator {
 
     private final ResourceNodeManager nodeManager;
-    private final DefaultYamlConfig config;
-    private final int maxGenerationX;
-    private final int maxGenerationZ;
-    private final int maxStoneNodes;
-    private final int maxSulfurNodes;
-    private final int maxMetalNodes;
-    private final World currentWorld;
+    private DefaultYamlConfig config;
+    private int maxGenerationX;
+    private int maxGenerationZ;
+    private int maxStoneNodes;
+    private int maxSulfurNodes;
+    private int maxMetalNodes;
+    private World currentWorld;
 
     private int currentStoneNodes = 0;
     private int currentSulfurNodes = 0;
@@ -30,13 +32,7 @@ public class ResourceNodeGenerator {
 
     public ResourceNodeGenerator(final ResourceNodeManager nodeManager) {
         this.nodeManager = nodeManager;
-        this.config = this.nodeManager.defaultYamlConfig();
-        this.maxGenerationX = this.config.maxNodeGenerationX();
-        this.maxGenerationZ = this.config.maxNodeGenerationZ();
-        this.maxMetalNodes = this.config.maxMetalNodes();
-        this.maxSulfurNodes = this.config.maxSulfurNodes();
-        this.maxStoneNodes = this.config.maxStoneNodes();
-        this.currentWorld = this.config.getWorld();
+        this.loadConfigValues();
         Logger.debug("RustCraft will be using world named: " + this.currentWorld + " as the RustWorld!", Rust.INSTANCE);
 
         this.nodeManager.getNodes().forEach((node) -> {
@@ -50,6 +46,76 @@ public class ResourceNodeGenerator {
         this.generateNodes();
     }
 
+    public List<JsonResourceNode> getStoneNodes() {
+        List<JsonResourceNode> resourceNodes = new ArrayList<>();
+        this.nodeManager.getNodes().forEach((node) -> {
+            if (node.currentResourceType == NodeType.STONE) resourceNodes.add(node);
+        });
+        return resourceNodes;
+    }
+
+    public List<JsonResourceNode> getMetalNodes() {
+        List<JsonResourceNode> resourceNodes = new ArrayList<>();
+        this.nodeManager.getNodes().forEach((node) -> {
+            if (node.currentResourceType == NodeType.METAL) resourceNodes.add(node);
+        });
+        return resourceNodes;
+    }
+
+    public List<JsonResourceNode> getSulfurNodes() {
+        List<JsonResourceNode> resourceNodes = new ArrayList<>();
+        this.nodeManager.getNodes().forEach((node) -> {
+            if (node.currentResourceType == NodeType.SULFUR) resourceNodes.add(node);
+        });
+        return resourceNodes;
+    }
+
+    public void loadConfigValues() {
+        this.config = this.nodeManager.defaultYamlConfig();
+        this.maxGenerationX = this.config.maxNodeGenerationX();
+        this.maxGenerationZ = this.config.maxNodeGenerationZ();
+        this.maxMetalNodes = this.config.maxMetalNodes();
+        this.maxSulfurNodes = this.config.maxSulfurNodes();
+        this.maxStoneNodes = this.config.maxStoneNodes();
+        this.currentWorld = this.config.getWorld();
+    }
+
+    public void reloadNodes() {
+        this.loadConfigValues();
+
+        Logger.log("Reloading stone nodes. . .");
+        if (this.currentStoneNodes > this.maxStoneNodes) {
+            while (this.currentStoneNodes > this.maxStoneNodes) {
+                final JsonResourceNode node = this.getStoneNodes().get(0);
+                this.nodeManager.deleteNode(node);
+                this.currentStoneNodes--;
+                Logger.debug("Deleted stone node", Rust.INSTANCE);
+            }
+        }
+
+        Logger.log("Reloading sulfur nodes. . .");
+        if (this.currentSulfurNodes > this.maxSulfurNodes) {
+            while (this.currentSulfurNodes > this.maxSulfurNodes) {
+                final JsonResourceNode node = this.getSulfurNodes().get(0);
+                this.nodeManager.deleteNode(node);
+                this.currentSulfurNodes--;
+                Logger.debug("Deleted sulfur node", Rust.INSTANCE);
+            }
+        }
+
+        Logger.log("Reloading Metal nodes. . .");
+        if (this.currentMetalNodes > this.maxMetalNodes) {
+            while (this.currentMetalNodes > this.maxMetalNodes) {
+                final JsonResourceNode node = this.getMetalNodes().get(0);
+                this.nodeManager.deleteNode(node);
+                this.currentMetalNodes--;
+                Logger.debug("Deleted metal node", Rust.INSTANCE);
+            }
+        }
+
+        this.generateNodes();
+    }
+
     public void generateNodes() {
         Logger.debug("Generating Stone nodes. . .", Rust.INSTANCE);
         this.generateStoneNodes();
@@ -58,6 +124,8 @@ public class ResourceNodeGenerator {
         Logger.debug("Generating Sulfur nodes. . .", Rust.INSTANCE);
         this.generateSulfurNodes();
     }
+
+
 
     private void generateStoneNodes() {
         while (currentStoneNodes < this.maxStoneNodes) {

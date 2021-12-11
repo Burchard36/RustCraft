@@ -1,14 +1,11 @@
 package com.burchard36.rust.events.event;
 
 import com.burchard36.rust.Rust;
-import com.burchard36.rust.lib.RustItem;
-import com.burchard36.rust.lib.RustItems;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class PlayerRespawnListener implements Listener {
 
@@ -16,12 +13,13 @@ public class PlayerRespawnListener implements Listener {
 
     public PlayerRespawnListener(final Rust pluginInstance) {
         this.pluginInstance = pluginInstance;
+        this.pluginInstance.getServer().getPluginManager().registerEvents(this, pluginInstance);
     }
 
     @EventHandler
-    public final void onRespawn(final PlayerRespawnEvent e) {
+    public void onRespawn(final PlayerRespawnEvent e) {
         final Player player = e.getPlayer();
-        player.getInventory().setItem(0, RustItems.getRockItem().getItemStack());
+        player.getInventory().setItem(0, this.pluginInstance.getDefaultYamlConfig().getRockItem().getItem());
     }
 
     public final void unregister() {

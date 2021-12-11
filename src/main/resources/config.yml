@@ -13,10 +13,18 @@ WorldSettings:
   StoneMaterial: DRIPSTONE_BLOCK
   MetalMaterial: DEEPSLATE_IRON_ORE
   SulfurMaterial: DEEPSLATE_GOLD_ORE
+  WoodMaterials:
+    - "OAK_WOOD"
+    - "OAK_LOG"
 
   MaxStoneNodes: 500
   MaxMetalNodes: 180
   MaxSulfurNodes: 150
+
+  SulfurNodeHarvestAmount: 2
+  StoneNodeHarvestAmount: 3
+  MetalNodeHarvestAmount: 3
+  WoodHarvestAmount: 3
 
   MaxNodeGenerationX: 767
   #767
@@ -25,6 +33,13 @@ WorldSettings:
 
   DenyBlocksUnderNode:
     - "WATER"
+    - "STONE"
+    - "TUFF"
+    - "OAK_LEAVES"
+    - "BIRCH_LEAVES"
+    - "ACACIA_LEAVES"
+    - "CACTUS"
+    - "LAVA"
 
 
   DenyStoneBiomeNodeSpawn:
@@ -52,14 +67,81 @@ Items:
       Name: "&e&l&oUncooked Sulfur"
       Lore:
         - "&f "
-        - "&e&oPut this into a furnace to refine it to"
+        - "&7&oPut this into a furnace to refine it to"
         - "&e&l&oCooked Sulfur&7&o useful for bullets and explosives!"
     Cooked:
       CustomModelData: 77322 #Dont change this dude
       Material: GOLD_INGOT
+      Name: "&e&l&oCooked Sulfur"
+      Lore:
+        - "&f "
+        - "&7&oUsed for crafting bullets and explosives!"
   Stone:
     Ore:
       CustomModelData: 77323 # Dont change this dude
-      RawCopper: "RAW_COPPER"
+      Material: "QUARTZ"
+      Name: "&e&lStone"
+      Lore:
+        - "&f "
+        - "&7&oUseful in creating sturdy buildings"
+  Wood:
+    Ore:
+      CustomModelData: 77324
+      Material: "RAW_COPPER"
+      Lore:
+        - "&f "
+        - "&7&oUsed in most crafting recipes"
+    Cooked:
+      CustomModelData: 77325
+      Material: "CHARCOAL"
+      Lore:
+        - "&f "
+        - "&7&oUsed in the creation of gunpowder"
+  Metal:
+    Ore:
+      Material: "RAW_IRON"
+      Name: "&e&l&oUncooked Metal Ore"
+      Lore:
+        - "&f "
+        - "&7&oPut this into a furnace to refine it to"
+        - "&e&l&oMetal Fragments&7&o useful for weapons and tools!"
+    Cooked:
+      Material: "IRON_INGOT"
+      Name: "&e&lMetal Fragment"
+      Lore:
+        - "&f "
+        - "&7&oUsed for crafting various weapons, structures and tools"
+
+
   Rock:
-    HarvestAmount: 2
+    HarvestMultiplier: 1
+    Material: CONDUIT
+    Name: "&7&lRock"
+    Lore:
+      - "&f "
+      - "&7&oWelcome to RustCraft, use this rock to"
+      - "&7&pbreak trees and rocks to make tools! (&bPress F&7)"
+  StonePickaxe:
+    HarvestMultiplier: 2
+    Name: "&e&l&oStone Pickaxe"
+    Material: STONE_PICKAXE
+    Lore:
+      - "&f "
+      - "&7&oBetter than a Rock, but not the best."
+    CraftRecipe:
+      Rust:
+        - "RUST_STONE:25"
+        - "RUST_WOOD:15"
+      Vanilla: []
+  StoneAxe:
+    HarvestMultiplier: 2
+    Name: "&e&l&oStone Axe"
+    Material: STONE_AXE
+    Lore:
+      - "&f "
+      - "&7&oBetter than a Rock, but not the best."
+    CraftRecipe:
+      Rust:
+        - "RUST_STONE:25"
+        - "RUST_WOOD:15"
+      Vanilla: []

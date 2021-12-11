@@ -3,21 +3,19 @@ package com.burchard36.rust;
 import com.burchard36.Api;
 import com.burchard36.ApiLib;
 import com.burchard36.Logger;
-import com.burchard36.inventory.ItemWrapper;
 import com.burchard36.rust.commands.RustCommandHandler;
 import com.burchard36.rust.config.DefaultYamlConfig;
 import com.burchard36.rust.data.DataManager;
 import com.burchard36.rust.data.NodeType;
 import com.burchard36.rust.events.RustListenerHandler;
-import com.burchard36.rust.lib.RustItem;
 import com.burchard36.rust.managers.ResourceNodeManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.util.Random;
 
 public final class Rust extends JavaPlugin implements Api {
@@ -38,7 +36,6 @@ public final class Rust extends JavaPlugin implements Api {
         this.dataManager = new DataManager(this);
         this.commandHandler = new RustCommandHandler(this);
         this.listenerHandler = new RustListenerHandler(this);
-
     }
 
     @Override
@@ -73,17 +70,6 @@ public final class Rust extends JavaPlugin implements Api {
         return new Location(world, randomX, randomY, randomZ);
     }
 
-    public static int getHarvestAmountOf(final ItemStack stack) {
-        final ItemWrapper wrapper = new ItemWrapper(stack);
-
-        if (wrapper.getStringDataValue("rust_item") == null) return 1;
-
-        final String rustItem = wrapper.getStringDataValue("rust_item");
-
-        if (rustItem.equalsIgnoreCase(RustItem.ROCK.getName())) return INSTANCE.getDefaultYamlConfig().getRockDropAmount();
-        return 1;
-    }
-
     public static Material getNodeMaterial(final NodeType  nodeType) {
         switch (nodeType) {
             case STONE -> {
@@ -99,6 +85,19 @@ public final class Rust extends JavaPlugin implements Api {
         return INSTANCE.defaultYamlConfig.getStoneWorldMaterial();
     }
 
+    public void reloadPlugin() {
+        Logger.log("Reloading plugin! Please note that if you" +
+                "edited your node values to be HIGHER than what they were before this reload, prepare for LAG!! As this will trigger all nodes to regenerate!");
+        try {
+            this.defaultYamlConfig.load(this.defaultYamlConfig.getConfigFile());
+            Logger.log("Reloaded config.yml!");
+        } catch (IOException | InvalidConfigurationException ex) {
+            ex.printStackTrace();
+        }
+
+        this.dataManager.reload();
+    }
+
     private static int getRandom(final int max) {
         return rand.nextInt(max - -max) + -max;
     }
@@ -110,6 +109,6 @@ public final class Rust extends JavaPlugin implements Api {
 
     @Override
     public String loggerPrefix() {
-        return "&b&lMineRust ";
+        return "&b&lRustCraft ";
     }
 }

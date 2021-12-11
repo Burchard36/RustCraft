@@ -1,10 +1,7 @@
 package com.burchard36.rust.events;
 
 import com.burchard36.rust.Rust;
-import com.burchard36.rust.events.event.BlockBreakListener;
-import com.burchard36.rust.events.event.InteractListener;
-import com.burchard36.rust.events.event.PlayerJoinListener;
-import com.burchard36.rust.events.event.PlayerRespawnListener;
+import com.burchard36.rust.events.event.*;
 
 public class RustListenerHandler {
 
@@ -13,6 +10,7 @@ public class RustListenerHandler {
     private final BlockBreakListener blockBreakListener;
     private final PlayerRespawnListener playerRespawnListener;
     private final PlayerJoinListener playerJoinListener;
+    private final SwitchHandListener switchHandListener;
 
     public RustListenerHandler(final Rust pluginInstance) {
         this.pluginInstance = pluginInstance;
@@ -21,6 +19,7 @@ public class RustListenerHandler {
         this.blockBreakListener = new BlockBreakListener(this.pluginInstance);
         this.playerRespawnListener = new PlayerRespawnListener(this.pluginInstance);
         this.playerJoinListener = new PlayerJoinListener(this.pluginInstance);
+        this.switchHandListener = new SwitchHandListener(this.pluginInstance);
     }
 
     public void unregisterAll() {
@@ -28,6 +27,7 @@ public class RustListenerHandler {
         this.blockBreakListener.unregister();
         this.playerRespawnListener.unregister();
         this.playerJoinListener.unregister();
+        this.switchHandListener.unregister();
     }
 
 }

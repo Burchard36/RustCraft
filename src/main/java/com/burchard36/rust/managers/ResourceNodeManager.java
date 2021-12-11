@@ -41,6 +41,10 @@ public class ResourceNodeManager {
         }.runTaskTimer(this.pluginInstance, 0, (20 * 60) * 5);
     }
 
+    public final void reload() {
+        this.nodeGenerator.reloadNodes();
+    }
+
     public void shutdown() {
         Logger.log("Shutting down ResourceNodeManager. . .");
         this.runningTask.cancel();
@@ -91,4 +95,7 @@ public class ResourceNodeManager {
         return this.pluginInstance.getDefaultYamlConfig();
     }
 
+    public final void deleteNode(final JsonResourceNode node) {
+        this.resourceNodes.deleteDataFile(node.getNodeUuid().toString());
+    }
 }

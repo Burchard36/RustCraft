@@ -36,6 +36,10 @@ public class DataManager {
         }.runTaskTimerAsynchronously(this.pluginInstance, (20 * 60) * 5, (20 * 60) * 5);
     }
 
+    public final void reload() {
+        this.nodeManager.reload();
+    }
+
     public final void shutdown() {
         Logger.log("Shutting down DataManager. . .");
         this.saveTask.cancel();

@@ -3,7 +3,7 @@ package com.burchard36.rust.events.event;
 import com.burchard36.Logger;
 import com.burchard36.inventory.ItemWrapper;
 import com.burchard36.rust.Rust;
-import com.burchard36.rust.lib.RustItem;
+import com.burchard36.rust.lib.RustItemType;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,7 +45,7 @@ public class InteractListener implements Listener {
                 final String value = wrapper.getStringDataValue("rust_item");
 
                 assert block != null;
-                if (value.equalsIgnoreCase(RustItem.ROCK.getName()) && this.pluginInstance.getDefaultYamlConfig().getInteractableMaterials().contains(block.getType())) {
+                if (value.equalsIgnoreCase(RustItemType.ROCK.getName()) && this.pluginInstance.getDefaultYamlConfig().getInteractableMaterials().contains(block.getType())) {
                     Logger.debug("Adding potion effect because player is holding rock", this.pluginInstance);
                     player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, (20 * 4), 4));
                 }
