@@ -1,6 +1,8 @@
 package com.burchard36.rust.lib;
 
+import com.burchard36.Logger;
 import com.burchard36.inventory.ItemWrapper;
+import com.burchard36.rust.Rust;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -46,6 +48,8 @@ public class RustItem {
     public final HashMap<RustItemType, Integer> getRustCraftRecipe() {
         if (!this.rustItemCraftAmounts.isEmpty()) return this.rustItemCraftAmounts;
         final String recipesString = this.wrapper.getStringDataValue("rust_craft_cost");
+        if (recipesString == null) return this.rustItemCraftAmounts;
+        if (recipesString.isEmpty() || recipesString.isBlank()) return this.rustItemCraftAmounts;
 
         for (final String ingredient : recipesString.split(",")) {
             final String[] ingredients = ingredient.split(":");
@@ -53,6 +57,20 @@ public class RustItem {
         }
 
         return this.rustItemCraftAmounts;
+    }
+
+    public final HashMap<Material, Integer> getVanillaCraftRecipe() {
+        if (!this.vanillaItemCraftAmounts.isEmpty()) return this.vanillaItemCraftAmounts;
+        final String recipesString = this.wrapper.getStringDataValue("vanilla_craft_cost");
+        if (recipesString == null) return this.vanillaItemCraftAmounts;
+        if (recipesString.isEmpty() || recipesString.isBlank()) return this.vanillaItemCraftAmounts;
+
+        for (final String ingredient : recipesString.split(",")) {
+            final String[] ingredients = ingredient.split(":");
+            this.vanillaItemCraftAmounts.putIfAbsent(Material.getMaterial(ingredients[0]), Integer.parseInt(ingredients[1]));
+        }
+
+        return this.vanillaItemCraftAmounts;
     }
 
     public final ItemStack getItem() {

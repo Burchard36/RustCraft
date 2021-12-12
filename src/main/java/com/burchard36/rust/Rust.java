@@ -9,10 +9,10 @@ import com.burchard36.rust.data.DataManager;
 import com.burchard36.rust.data.NodeType;
 import com.burchard36.rust.events.RustListenerHandler;
 import com.burchard36.rust.managers.ResourceNodeManager;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -36,6 +36,9 @@ public final class Rust extends JavaPlugin implements Api {
         this.dataManager = new DataManager(this);
         this.commandHandler = new RustCommandHandler(this);
         this.listenerHandler = new RustListenerHandler(this);
+
+        RecipeChoice choice = new RecipeChoice.ExactChoice(this.defaultYamlConfig.getUncookedWoodItem().getItem());
+        Bukkit.addRecipe(new FurnaceRecipe(new NamespacedKey(this, "charcoal_recipe"), this.defaultYamlConfig.getCharcoalItem().getItem(), choice, 0, 60));
     }
 
     @Override

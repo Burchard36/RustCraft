@@ -15,7 +15,8 @@ public class CraftingPageIndex {
     private final PluginInventory inventory;
 
     public CraftingPageIndex() {
-        final ClickableItem background = new ClickableItem(new ItemWrapper(new ItemStack(Material.GRAY_STAINED_GLASS_PANE)).setDisplayName("&f "));
+        final ClickableItem background = new ClickableItem(new ItemWrapper(new ItemStack(Material.GRAY_STAINED_GLASS_PANE))
+                .setDisplayName("&f "));
         final ClickableItem toolsSection = new ClickableItem(new ItemWrapper(new ItemStack(Material.STONE_PICKAXE))
                 .setDisplayName("&e&lTools Section"))
                 .onClick((onClick) -> {

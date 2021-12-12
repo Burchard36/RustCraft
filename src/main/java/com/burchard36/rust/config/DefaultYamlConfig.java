@@ -112,6 +112,12 @@ public class DefaultYamlConfig extends YamlConfiguration {
         return breakableMaterial;
     }
 
+    public static List<String> getPlayerNames() {
+        final List<String> playerNames = new ArrayList<>();
+        Bukkit.getOnlinePlayers().forEach(player -> playerNames.add(player.getName()));
+        return playerNames;
+    }
+
     public final List<Material> getInteractableMaterials() {
         final List<Material> interactableMaterial = new ArrayList<>();
         this.getStringList("WorldSettings.InteractableBlocks").forEach((stringMaterial) ->
@@ -135,11 +141,11 @@ public class DefaultYamlConfig extends YamlConfiguration {
     }
 
     public final RustItem getUncookedSulfurItem() {
-        return this.getRustItemFromPath("Items.Sulfur.Ore", RustItemType.COOKED_SULFUR);
+        return this.getRustItemFromPath("Items.Sulfur.Ore", RustItemType.UNCOOKED_SULFUR);
     }
 
     public final RustItem getCookedSulfurItem() {
-        return this.getRustItemFromPath("Items.Sulfur.Cooked", RustItemType.UNCOOKED_SULFUR);
+        return this.getRustItemFromPath("Items.Sulfur.Cooked", RustItemType.COOKED_SULFUR);
     }
 
     public final RustItem getUncookedMetalItem() {
@@ -190,7 +196,7 @@ public class DefaultYamlConfig extends YamlConfiguration {
                 rustItem.wrapper.setModelData(sec.getInt(key));
 
             if (key.equalsIgnoreCase("HarvestMultiplier"))
-                rustItem.harvestMultiplier = this.getInt(key);
+                rustItem.harvestMultiplier = sec.getInt(key);
 
             if (key.equalsIgnoreCase("CraftRecipe")) {
                 this.loadCraftRecipes(sec.getConfigurationSection(key), rustItem);

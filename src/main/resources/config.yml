@@ -16,6 +16,8 @@ WorldSettings:
   WoodMaterials:
     - "OAK_WOOD"
     - "OAK_LOG"
+    - "ACACIA_WOOD"
+    - "ACACIA_LOG"
 
   MaxStoneNodes: 500
   MaxMetalNodes: 180
@@ -87,13 +89,15 @@ Items:
   Wood:
     Ore:
       CustomModelData: 77324
-      Material: "RAW_COPPER"
+      Material: "STICK"
+      Name: "&e&lWood"
       Lore:
         - "&f "
         - "&7&oUsed in most crafting recipes"
     Cooked:
       CustomModelData: 77325
       Material: "CHARCOAL"
+      Name: "&e&lCharcoal"
       Lore:
         - "&f "
         - "&7&oUsed in the creation of gunpowder"

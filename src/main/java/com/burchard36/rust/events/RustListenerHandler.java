@@ -11,6 +11,7 @@ public class RustListenerHandler {
     private final PlayerRespawnListener playerRespawnListener;
     private final PlayerJoinListener playerJoinListener;
     private final SwitchHandListener switchHandListener;
+    private final FurnaceBurnListener burnListener;
 
     public RustListenerHandler(final Rust pluginInstance) {
         this.pluginInstance = pluginInstance;
@@ -20,6 +21,7 @@ public class RustListenerHandler {
         this.playerRespawnListener = new PlayerRespawnListener(this.pluginInstance);
         this.playerJoinListener = new PlayerJoinListener(this.pluginInstance);
         this.switchHandListener = new SwitchHandListener(this.pluginInstance);
+        this.burnListener = new FurnaceBurnListener(this.pluginInstance);
     }
 
     public void unregisterAll() {
@@ -28,6 +30,7 @@ public class RustListenerHandler {
         this.playerRespawnListener.unregister();
         this.playerJoinListener.unregister();
         this.switchHandListener.unregister();
+        this.burnListener.unregister();
     }
 
 }
