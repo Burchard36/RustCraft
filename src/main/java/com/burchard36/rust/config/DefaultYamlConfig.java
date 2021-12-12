@@ -13,6 +13,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class DefaultYamlConfig extends YamlConfiguration {
@@ -113,9 +115,7 @@ public class DefaultYamlConfig extends YamlConfiguration {
     }
 
     public static List<String> getPlayerNames() {
-        final List<String> playerNames = new ArrayList<>();
-        Bukkit.getOnlinePlayers().forEach(player -> playerNames.add(player.getName()));
-        return playerNames;
+        return Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList());
     }
 
     public final List<Material> getInteractableMaterials() {
