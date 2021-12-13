@@ -1,11 +1,6 @@
 # If this is true you get Debug Logs in your console, this may be a big spammy
 DebugMode: true
 
-NodeSettings:
-
-  # Time in minutes nodes should reset
-  ResetTimer: 5
-
 WorldSettings:
 
   UseWorld: "Rust"
@@ -26,7 +21,6 @@ WorldSettings:
   SulfurNodeHarvestAmount: 2
   StoneNodeHarvestAmount: 3
   MetalNodeHarvestAmount: 3
-  WoodHarvestAmount: 3
 
   MaxNodeGenerationX: 767
   #767

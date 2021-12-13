@@ -3,6 +3,7 @@ package com.burchard36.rust.config;
 import com.burchard36.Logger;
 import com.burchard36.inventory.ItemWrapper;
 import com.burchard36.rust.Rust;
+import com.burchard36.rust.data.NodeType;
 import com.burchard36.rust.lib.RustItem;
 import com.burchard36.rust.lib.RustItemType;
 import org.bukkit.Bukkit;
@@ -42,10 +43,6 @@ public class DefaultYamlConfig extends YamlConfiguration {
         return this.getBoolean("DebugMode");
     }
 
-    public final int nodeResetTimeMinutes() {
-        return this.getInt("NodeSettings.ResetTimer");
-    }
-
     public final int stoneNodeHarvestAmount() {
         return this.getInt("WorldSettings.StoneNodeHarvestAmount");
     }
@@ -56,10 +53,6 @@ public class DefaultYamlConfig extends YamlConfiguration {
 
     public final int metalNodeHarvestAmount() {
         return this.getInt("WorldSettings.MetalNodeHarvestAmount");
-    }
-
-    public final int woodNodeHarvestAmount() {
-        return this.getInt("WorldSettings.WoodNodeHarvestAmount");
     }
 
     public final int maxStoneNodes() {
@@ -266,6 +259,21 @@ public class DefaultYamlConfig extends YamlConfiguration {
 
     public final Material getSulfurWorldMaterial() {
         return Material.getMaterial(this.getString("WorldSettings.SulfurMaterial"));
+    }
+
+    public final Material getNodeMaterial(final NodeType nodeType) {
+        switch (nodeType) {
+            case STONE -> {
+                return this.getStoneWorldMaterial();
+            }
+            case SULFUR -> {
+                return this.getSulfurWorldMaterial();
+            }
+            case METAL -> {
+                return this.getMetalWorldMaterial();
+            }
+        }
+        return this.getStoneWorldMaterial();
     }
 
     public final File getConfigFile() {

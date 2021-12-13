@@ -32,7 +32,7 @@ public class ResourceNodeManager {
             @Override
             public void run() {
                 getNodes().forEach((jsonNode) -> {
-                    if (!jsonNode.stillExists()) {
+                    if (jsonNode.doesNotExist()) {
                         Logger.warn("Found a Node that had blocks that didnt exist. Regenerating it now, this is like due to a crash or world editing the resource node!");
                         nodeGenerator.regenerateNode(jsonNode);
                     }
@@ -57,7 +57,7 @@ public class ResourceNodeManager {
             return null;
         }
 
-        if (!node.stillExists()) {
+        if (node.doesNotExist()) {
             Logger.debug("The node no longer exists! Regenerating. . .", this.pluginInstance);
             this.nodeGenerator.regenerateNode(node);
         } else Logger.debug("The node still exists!", this.pluginInstance);

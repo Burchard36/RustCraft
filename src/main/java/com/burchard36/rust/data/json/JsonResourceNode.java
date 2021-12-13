@@ -11,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,14 +63,14 @@ public class JsonResourceNode extends JsonDataFile {
         return location.getBlock().getType() == Material.AIR;
     }
 
-    public boolean stillExists() {
+    public boolean doesNotExist() {
         boolean oneBlockExisted = false;
         for (final RustLocation loc : this.nodeLocations) {
-            if (loc.getSpigotLocation().getBlock().getType() == Rust.getNodeMaterial(this.currentResourceType))
+            if (loc.getSpigotLocation().getBlock().getType() ==
+                    Rust.INSTANCE.getDefaultYamlConfig().getNodeMaterial(this.currentResourceType))
                 oneBlockExisted = true;
-
         }
-        return oneBlockExisted;
+        return !oneBlockExisted;
     }
 
     public final boolean blockCheck(final DefaultYamlConfig config) {
@@ -108,7 +107,7 @@ public class JsonResourceNode extends JsonDataFile {
         this.nodeLocations.add(new RustLocation(location.clone().add(0, 0, 1)));
         this.nodeLocations.add(new RustLocation(location.clone().subtract(0, 0, 1)));
 
-        this.nodeLocations.forEach((loc) -> loc.getSpigotLocation().getBlock().setType(Rust.getNodeMaterial(this.currentResourceType)));
+        this.nodeLocations.forEach((loc) -> loc.getSpigotLocation().getBlock().setType(config.getNodeMaterial(this.currentResourceType)));
 
         Logger.debug("Nodes Block Types were successfully set.", Rust.INSTANCE);
     }

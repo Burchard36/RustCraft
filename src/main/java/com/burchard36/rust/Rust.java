@@ -8,6 +8,7 @@ import com.burchard36.rust.config.DefaultYamlConfig;
 import com.burchard36.rust.data.DataManager;
 import com.burchard36.rust.data.NodeType;
 import com.burchard36.rust.events.RustListenerHandler;
+import com.burchard36.rust.managers.PlayerDataManager;
 import com.burchard36.rust.managers.ResourceNodeManager;
 import org.bukkit.*;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -66,26 +67,15 @@ public final class Rust extends JavaPlugin implements Api {
         return this.dataManager.getNodeManager();
     }
 
+    public PlayerDataManager getPlayerDataManager() {
+        return this.dataManager.getPlayerDataManager();
+    }
+
     public static Location getRandomLocation(final World world, final int max, final int min) {
         final int randomX = getRandom(max);
         final int randomZ = getRandom(min);
         final int randomY = world.getHighestBlockYAt(randomX, randomZ);
         return new Location(world, randomX, randomY, randomZ);
-    }
-
-    public static Material getNodeMaterial(final NodeType  nodeType) {
-        switch (nodeType) {
-            case STONE -> {
-                return INSTANCE.defaultYamlConfig.getStoneWorldMaterial();
-            }
-            case SULFUR -> {
-                return INSTANCE.getDefaultYamlConfig().getSulfurWorldMaterial();
-            }
-            case METAL -> {
-                return INSTANCE.getDefaultYamlConfig().getMetalWorldMaterial();
-            }
-        }
-        return INSTANCE.defaultYamlConfig.getStoneWorldMaterial();
     }
 
     public void reloadPlugin() {
@@ -107,7 +97,7 @@ public final class Rust extends JavaPlugin implements Api {
 
     @Override
     public boolean isDebug() {
-        return true;
+        return this.defaultYamlConfig.isDebugMode();
     }
 
     @Override
