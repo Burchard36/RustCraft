@@ -11,6 +11,7 @@ import com.burchard36.rust.events.RustListenerHandler;
 import com.burchard36.rust.lib.RustItemType;
 import com.burchard36.rust.managers.PlayerDataManager;
 import com.burchard36.rust.managers.ResourceNodeManager;
+import com.burchard36.rust.managers.RustClanManager;
 import org.bukkit.*;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.inventory.FurnaceRecipe;
@@ -71,6 +72,10 @@ public final class Rust extends JavaPlugin implements Api {
 
     public PlayerDataManager getPlayerDataManager() {
         return this.dataManager.getPlayerDataManager();
+    }
+
+    public RustClanManager getClanManager() {
+        return this.dataManager.getClanManager();
     }
 
     public static Location getRandomLocation(final World world, final int max, final int min) {

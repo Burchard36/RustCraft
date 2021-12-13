@@ -45,8 +45,8 @@ public class ClanCommandHandler {
     private void handleLeaveClan
 
     private void handleCreateClan(final JsonPlayerData data) {
-        if (data.isInClan()) {
-            data.getPlayer().sendMessage(convert("&c&oYou cannot create a clan when you already belong to one"));
+        if (data.isInAClan(this.pluginInstance)) {
+            data.getPlayer().sendMessage(convert("&c&oYou cannot create a clan when you already belong to one! Please leave your current clan"));
             return;
         }
     }

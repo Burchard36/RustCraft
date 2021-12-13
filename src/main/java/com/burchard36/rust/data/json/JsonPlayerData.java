@@ -39,8 +39,12 @@ public class JsonPlayerData extends JsonDataFile {
     }
 
     // TODO: Hook this to ClanAPI so it sees if this clan actually exists or not
-    public boolean isInClan() {
-        return !this.clanUuid.isBlank() || !this.clanUuid.isEmpty();
+    public boolean isInAClan(final Rust plugin) {
+        if (!this.clanUuid.isBlank() || !this.clanUuid.isEmpty()) return false;
+        final JsonRustClan clan = plugin.getClanManager().getRustClan(UUID.fromString(this.clanUuid));
+        if (clan != null) return true;
+        this.clanUuid = "";
+        return false;
     }
 
 }
