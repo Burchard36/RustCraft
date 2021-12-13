@@ -5,8 +5,10 @@ import com.burchard36.json.PluginDataMap;
 import com.burchard36.rust.Rust;
 import com.burchard36.rust.data.json.JsonPlayerData;
 import com.burchard36.rust.data.json.JsonResourceNode;
+import com.burchard36.rust.data.json.JsonRustClan;
 import com.burchard36.rust.managers.PlayerDataManager;
 import com.burchard36.rust.managers.ResourceNodeManager;
+import com.burchard36.rust.managers.RustClanManager;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -20,20 +22,27 @@ public class DataManager {
     private final BukkitTask saveTask;
     private final ResourceNodeManager nodeManager;
     private final PlayerDataManager playerDataManager;
+    private final RustClanManager clanManager;
     private final PluginDataMap resourceNodeMap;
     private final PluginDataMap playerDataMap;
+    private final PluginDataMap clansDataMap;
 
     public DataManager(final Rust pluginInstance) {
         this.pluginInstance = pluginInstance;
         this.resourceNodeMap = new PluginDataMap(this.pluginInstance.getLib().getPluginDataManager().getJsonWriter());
         this.playerDataMap = new PluginDataMap(this.pluginInstance.getLib().getPluginDataManager().getJsonWriter());
+        this.clansDataMap = new PluginDataMap(this.pluginInstance.getLib().getPluginDataManager().getJsonWriter());
         this.pluginInstance.getLib().getPluginDataManager().registerPluginMap(DataFile.RESOURCE_NODES, this.resourceNodeMap);
         this.pluginInstance.getLib().getPluginDataManager().registerPluginMap(DataFile.PLAYER_DATA, this.playerDataMap);
+        this.pluginInstance.getLib().getPluginDataManager().registerPluginMap(DataFile.RUST_CLANS, this.clansDataMap);
 
         this.loadResourceNodes();
         this.nodeManager = new ResourceNodeManager(this.resourceNodeMap, this.pluginInstance);
         this.loadPlayerData();
         this.playerDataManager = new PlayerDataManager(this.playerDataMap, this.pluginInstance);
+        this.loadClansData();
+        this.clanManager = new RustClanManager(this.clansDataMap, this.pluginInstance);
+
 
         this.saveTask = new BukkitRunnable() {
             @Override
@@ -43,6 +52,8 @@ public class DataManager {
                 Logger.log("Finished saving Resource node-data!");
                 playerDataMap.saveAll();
                 Logger.log("Finished saving Player-data!");
+                clansDataMap.saveAll();
+                Logger.log("Finished saving RustClans-data!");
                 Logger.log("Successfully saved all plugin-data!");
             }
         }.runTaskTimerAsynchronously(this.pluginInstance, (20 * 60) * 5, (20 * 60) * 5);
@@ -57,6 +68,7 @@ public class DataManager {
         this.saveTask.cancel();
         this.resourceNodeMap.saveAll();
         this.playerDataMap.saveAll();
+        this.clansDataMap.saveAll();
     }
 
     private void loadResourceNodes() {
@@ -92,6 +104,22 @@ public class DataManager {
         }
     }
 
+    private void loadClansData() {
+        Logger.log("Loading Clans Data directory. . .");
+        final File clans = new File(this.pluginInstance.getDataFolder(), "/data/clans/");
+        if (!clans.exists()) if (clans.mkdirs()) Logger.log("Successfully created directory: /data/clans");
+
+        final File[] clansDirectory = clans.listFiles();
+        if (this.directoryIsEmpty(clansDirectory)) return;
+
+        for (final File dataFile : clansDirectory) {
+            if (this.notEndsWithJson(dataFile)) continue;
+
+            final UUID uuid = this.getUuidFromFile(dataFile);
+            this.clansDataMap.loadDataFile(uuid.toString(), new JsonRustClan(uuid));
+        }
+    }
+
     private UUID getUuidFromFile(final File file) {
         final String fileNameUuid = file.getName().split("\\.")[0];
         return UUID.fromString(fileNameUuid);
@@ -118,5 +146,9 @@ public class DataManager {
 
     public final PlayerDataManager getPlayerDataManager() {
         return this.playerDataManager;
+    }
+
+    public final RustClanManager getClanManager() {
+        return this.clanManager;
     }
 }

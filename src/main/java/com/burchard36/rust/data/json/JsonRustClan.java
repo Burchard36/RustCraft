@@ -107,18 +107,28 @@ public class JsonRustClan extends JsonDataFile {
         }
     }
 
+    private void removePlayerFromClan(final UUID uuid) {
+        this.removeFromRole(uuid, this.getRoleOf(uuid));
+        if (this.isInThisClan(uuid)) this.removePlayerFromClan(uuid);
+    }
+
     public final boolean hasAuthorityOver(final UUID authority, final UUID toCheckAgainst) {
         return this.getRoleOf(authority).getWeight() > this.getRoleOf(toCheckAgainst).getWeight() || this.isMainOwner(authority);
     }
 
     public final void promotePlayer(final Player promoter, final UUID toPromote) {
+        if (!this.isInThisClan(toPromote)) {
+            promoter.sendMessage(convert("&c&oYou cannot promote this member because they are not in this clan"));
+            return;
+        }
+
         if (promoter.getUniqueId().equals(toPromote)) {
-            promoter.sendMessage(convert("You cannot promote yourself!"));
+            promoter.sendMessage(convert("&c&oYou cannot promote yourself!"));
             return;
         }
 
         if (!hasAuthorityOver(promoter.getUniqueId(), toPromote)) {
-            promoter.sendMessage(convert("&cYou cannot promote this player because you do not have authority over them!"));
+            promoter.sendMessage(convert("&c&oYou cannot promote this player because you do not have authority over them!"));
             return;
         }
 
@@ -132,6 +142,64 @@ public class JsonRustClan extends JsonDataFile {
         this.addToRole(toPromote, nextRole);
         this.removeFromRole(toPromote, currentRole);
         promoter.sendMessage(convert("&a&oYou have successfully promoted the player to " + nextRole.name()));
+    }
+
+    public final void demotePlayer(final Player demoter, final UUID toDemote) {
+        if (!this.isInThisClan(toDemote)) {
+            demoter.sendMessage(convert("&c&oYou cannot demote this member because they are not a member of this clan!"));
+            return;
+        }
+        if (demoter.getUniqueId().equals(toDemote)) {
+            demoter.sendMessage(convert("&c&oYou cannot demote yourself!"));
+            return;
+        }
+
+        if (!hasAuthorityOver(demoter.getUniqueId(), toDemote)) {
+            demoter.sendMessage(convert("&c&oYou cannot demote this member because you do not have authority over them!"));
+            return;
+        }
+
+        final ClanRole currentRole = this.getRoleOf(toDemote);
+        final ClanRole nextRole = this.getPreviousRole(currentRole);
+        if (nextRole == ClanRole.NONE) {
+            demoter.sendMessage(convert("&c&oYou cannot demote this player any further, if you want them removed from your clan do &e&o/clan kick <player>"));
+            return;
+        }
+
+        this.addToRole(toDemote, nextRole);
+        this.removeFromRole(toDemote, currentRole);
+        demoter.sendMessage(convert("&a&oSuccessfully set the members role to: " + nextRole.name()));
+    }
+
+    public final void transferOwnership(final UUID to) {
+        this.clanMembers.add(this.clanOwner);
+        this.clanOwner = to.toString();
+    }
+
+    public final void kickPlayer(final Player kicker, final UUID toKick) {
+        if (!this.isInThisClan(toKick)) {
+            kicker.sendMessage(convert("&c&oYou cannot kick this player because they are not in this clan!"));
+            return;
+        }
+
+        if (kicker.getUniqueId().equals(toKick)) {
+            kicker.sendMessage(convert("&c&oYou cannot kick yourself!"));
+            return;
+        }
+
+        final ClanRole kickerRole = this.getRoleOf(kicker.getUniqueId());
+        if (kickerRole.getWeight() < ClanRole.MODERATOR.getWeight()) {
+            kicker.sendMessage(convert("&c&oOnly clan moderators are allowed to kick members!"));
+            return;
+        }
+
+        if (!this.hasAuthorityOver(kicker.getUniqueId(), toKick)) {
+            kicker.sendMessage(convert("&c&oYou cannot kick this player because you do not have authority over them!"));
+            return;
+        }
+
+        this.removePlayerFromClan(toKick);
+        kicker.sendMessage(convert("&c&oSuccessfully kicked the member from the clan!"));
     }
 
     public final boolean isInThisClan(final Player player) {
