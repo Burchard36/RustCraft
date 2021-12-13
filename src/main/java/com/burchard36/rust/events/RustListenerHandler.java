@@ -1,7 +1,7 @@
 package com.burchard36.rust.events;
 
 import com.burchard36.rust.Rust;
-import com.burchard36.rust.events.event.*;
+import com.burchard36.rust.events.spigot.*;
 
 public class RustListenerHandler {
 

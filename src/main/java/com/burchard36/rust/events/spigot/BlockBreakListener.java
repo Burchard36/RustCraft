@@ -1,13 +1,13 @@
-package com.burchard36.rust.events.event;
+package com.burchard36.rust.events.spigot;
 
 import com.burchard36.Logger;
 import com.burchard36.rust.Rust;
 import com.burchard36.rust.config.DefaultYamlConfig;
 import com.burchard36.rust.data.json.JsonResourceNode;
 import com.burchard36.rust.lib.RustItem;
+import com.burchard36.rust.lib.RustItemType;
 import com.burchard36.rust.lib.RustItems;
 import com.burchard36.rust.managers.ResourceNodeManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -17,8 +17,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -33,24 +31,19 @@ public class BlockBreakListener implements Listener {
     public BlockBreakListener(final Rust pluginInstance) {
         this.plugin = pluginInstance;
         this.plugin.getServer().getPluginManager().registerEvents(this, pluginInstance);
-
     }
 
     @EventHandler
     public void onItemAdd(final EntityPickupItemEvent event) {
-        Logger.debug("Firing pickup event", this.plugin);
         final DefaultYamlConfig config = this.plugin.getDefaultYamlConfig();
         if (event.getEntityType() != EntityType.PLAYER) return;
-        final Player player = (Player) event.getEntity();
 
         if (!config.getWoodNodeMaterials().contains(event.getItem().getItemStack().getType())) {
             Logger.debug("cancelling item add event because it wasn't a wood material...", this.plugin);
             return;
         }
 
-        Logger.debug("Was a wood piece", this.plugin);
-
-        final ItemStack newStack = config.getUncookedWoodItem().getItem();
+        final ItemStack newStack = config.getRustItem(RustItemType.RUST_WOOD).getItem();
         newStack.setAmount(event.getItem().getItemStack().getAmount());
         event.getItem().setItemStack(newStack);
     }
@@ -101,19 +94,19 @@ public class BlockBreakListener implements Listener {
         switch (node.currentResourceType) {
             case SULFUR -> {
                 Logger.debug("(BlockBreakEvent) Detected node as SULFUR ", this.plugin);
-                nodeReward = this.plugin.getDefaultYamlConfig().getUncookedSulfurItem();
+                nodeReward = this.plugin.getDefaultYamlConfig().getRustItem(RustItemType.UNCOOKED_SULFUR);
                 harvestAmount = this.plugin.getDefaultYamlConfig().sulfurNodeHarvestAmount();
             }
 
             case STONE -> {
                 Logger.debug("(BlockBreakEvent) Detected node as STONE ", this.plugin);
-                nodeReward = this.plugin.getDefaultYamlConfig().getRustStoneItem();
+                nodeReward = this.plugin.getDefaultYamlConfig().getRustItem(RustItemType.RUST_STONE);
                 harvestAmount = this.plugin.getDefaultYamlConfig().stoneNodeHarvestAmount();
             }
 
             case METAL -> {
                 Logger.debug("(BlockBreakEvent) Detected node as METAL ", this.plugin);
-                nodeReward = this.plugin.getDefaultYamlConfig().getUncookedMetalItem();
+                nodeReward = this.plugin.getDefaultYamlConfig().getRustItem(RustItemType.UNCOOKED_METAL);
                 harvestAmount = this.plugin.getDefaultYamlConfig().metalNodeHarvestAmount();
             }
         }
@@ -121,7 +114,7 @@ public class BlockBreakListener implements Listener {
         if (RustItems.isRustItem(itemUsed)) {
             final RustItem item = RustItems.getRustItemFrom(itemUsed);
             assert item != null;
-            harvestAmount = harvestAmount * item.getItemStackMultiplier();
+            harvestAmount *= item.getItemStackMultiplier();
         }
 
         nodeReward.getItem().setAmount(harvestAmount);

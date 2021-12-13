@@ -14,7 +14,6 @@ import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -22,8 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 public class DefaultYamlConfig extends YamlConfiguration {
 
@@ -107,10 +104,6 @@ public class DefaultYamlConfig extends YamlConfiguration {
         return breakableMaterial;
     }
 
-    public static List<String> getPlayerNames() {
-        return Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList());
-    }
-
     public final List<Material> getInteractableMaterials() {
         final List<Material> interactableMaterial = new ArrayList<>();
         this.getStringList("WorldSettings.InteractableBlocks").forEach((stringMaterial) ->
@@ -125,44 +118,8 @@ public class DefaultYamlConfig extends YamlConfiguration {
         return woodMaterials;
     }
 
-    public final RustItem getRockItem() {
-        return this.getRustItemFromPath("Items.Rock", RustItemType.ROCK);
-    }
-
-    public final RustItem getRustStoneItem() {
-        return this.getRustItemFromPath("Items.Stone.Ore", RustItemType.RUST_STONE);
-    }
-
-    public final RustItem getUncookedSulfurItem() {
-        return this.getRustItemFromPath("Items.Sulfur.Ore", RustItemType.UNCOOKED_SULFUR);
-    }
-
-    public final RustItem getCookedSulfurItem() {
-        return this.getRustItemFromPath("Items.Sulfur.Cooked", RustItemType.COOKED_SULFUR);
-    }
-
-    public final RustItem getUncookedMetalItem() {
-        return this.getRustItemFromPath("Items.Metal.Ore", RustItemType.UNCOOKED_METAL);
-    }
-
-    public final RustItem getMetalFragmentItem() {
-        return this.getRustItemFromPath("Items.Metal.Cooked", RustItemType.METAL_FRAGMENTS);
-    }
-
-    public final RustItem getUncookedWoodItem() {
-        return this.getRustItemFromPath("Items.Wood.Ore", RustItemType.RUST_WOOD);
-    }
-
-    public final RustItem getCharcoalItem() {
-        return this.getRustItemFromPath("Items.Wood.Cooked", RustItemType.RUST_CHARCOAL);
-    }
-
-    public final RustItem getStonePickaxe() {
-        return this.getRustItemFromPath("Items.StonePickaxe", RustItemType.STONE_PICKAXE);
-    }
-
-    public final RustItem getStoneAxe() {
-        return this.getRustItemFromPath("Items.StoneAxe", RustItemType.STONE_AXE);
+    public final RustItem getRustItem(final RustItemType type) {
+        return this.getRustItemFromPath(type.getPath(), type);
     }
 
     private RustItem getRustItemFromPath(final String path,

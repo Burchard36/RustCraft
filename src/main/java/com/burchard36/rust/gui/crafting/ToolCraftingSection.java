@@ -4,7 +4,6 @@ import com.burchard36.Logger;
 import com.burchard36.inventory.ClickableItem;
 import com.burchard36.inventory.ItemWrapper;
 import com.burchard36.inventory.PluginInventory;
-import com.burchard36.inventory.interfaces.GuiClickAction;
 import com.burchard36.rust.Rust;
 import com.burchard36.rust.config.DefaultYamlConfig;
 import com.burchard36.rust.lib.RustItem;
@@ -29,9 +28,9 @@ public class ToolCraftingSection {
     public ToolCraftingSection(final DefaultYamlConfig config) {
         final ClickableItem background = new ClickableItem(new ItemWrapper(new ItemStack(Material.GRAY_STAINED_GLASS_PANE)).setDisplayName("&f "))
                 .onClick(this::handleCraft);
-        final ClickableItem stonePickaxe = new ClickableItem(new ItemWrapper(config.getStonePickaxe().getItem()))
+        final ClickableItem stonePickaxe = new ClickableItem(new ItemWrapper(config.getRustItem(RustItemType.STONE_PICKAXE).getItem()))
                 .onClick(this::handleCraft);
-        final ClickableItem stoneAxe = new ClickableItem(new ItemWrapper(config.getStoneAxe().getItem()))
+        final ClickableItem stoneAxe = new ClickableItem(new ItemWrapper(config.getRustItem(RustItemType.STONE_AXE).getItem()))
                 .onClick(this::handleCraft);
         this.inventory = new PluginInventory(54, "&3&lTool Crafting Section")
                 .fillWith(background)

@@ -1,27 +1,18 @@
-package com.burchard36.rust.events.event;
+package com.burchard36.rust.events.spigot;
 
 import com.burchard36.Logger;
 import com.burchard36.rust.Rust;
 import com.burchard36.rust.lib.RustItem;
 import com.burchard36.rust.lib.RustItemType;
 import com.burchard36.rust.lib.RustItems;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
-import org.bukkit.event.inventory.FurnaceStartSmeltEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.FurnaceInventory;
-import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
 
-public class FurnaceBurnListener implements Listener {
-
-    private final Rust pluginInstance;
+public record FurnaceBurnListener(Rust pluginInstance) implements Listener {
 
     public FurnaceBurnListener(final Rust pluginInstance) {
         this.pluginInstance = pluginInstance;
@@ -59,11 +50,9 @@ public class FurnaceBurnListener implements Listener {
         RustItem rustItem = null;
 
         switch (rustItemType) {
-
-            case UNCOOKED_SULFUR -> rustItem = this.pluginInstance.getDefaultYamlConfig().getCookedSulfurItem();
-            case UNCOOKED_METAL -> rustItem = this.pluginInstance.getDefaultYamlConfig().getMetalFragmentItem();
-            case RUST_WOOD -> rustItem = this.pluginInstance.getDefaultYamlConfig().getCharcoalItem();
-            default -> rustItem = null;
+            case UNCOOKED_SULFUR -> rustItem = this.pluginInstance.getDefaultYamlConfig().getRustItem(RustItemType.COOKED_SULFUR);
+            case UNCOOKED_METAL -> rustItem = this.pluginInstance.getDefaultYamlConfig().getRustItem(RustItemType.METAL_FRAGMENTS);
+            case RUST_WOOD -> rustItem = this.pluginInstance.getDefaultYamlConfig().getRustItem(RustItemType.RUST_CHARCOAL);
         }
 
         if (rustItem == null) {
@@ -78,7 +67,7 @@ public class FurnaceBurnListener implements Listener {
         Logger.debug("Successfully smelted RustItemType: " + rustItemType.name, this.pluginInstance);
     }
 
-    public final void unregister() {
+    public void unregister() {
         HandlerList.unregisterAll(this);
     }
 }

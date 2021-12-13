@@ -8,6 +8,7 @@ import com.burchard36.rust.config.DefaultYamlConfig;
 import com.burchard36.rust.data.DataManager;
 import com.burchard36.rust.data.NodeType;
 import com.burchard36.rust.events.RustListenerHandler;
+import com.burchard36.rust.lib.RustItemType;
 import com.burchard36.rust.managers.PlayerDataManager;
 import com.burchard36.rust.managers.ResourceNodeManager;
 import org.bukkit.*;
@@ -38,8 +39,9 @@ public final class Rust extends JavaPlugin implements Api {
         this.commandHandler = new RustCommandHandler(this);
         this.listenerHandler = new RustListenerHandler(this);
 
-        RecipeChoice choice = new RecipeChoice.ExactChoice(this.defaultYamlConfig.getUncookedWoodItem().getItem());
-        Bukkit.addRecipe(new FurnaceRecipe(new NamespacedKey(this, "charcoal_recipe"), this.defaultYamlConfig.getCharcoalItem().getItem(), choice, 0, 60));
+        RecipeChoice choice = new RecipeChoice.ExactChoice(this.defaultYamlConfig.getRustItem(RustItemType.RUST_WOOD).getItem());
+        Bukkit.addRecipe(new FurnaceRecipe(new NamespacedKey(this, "charcoal_recipe"),
+                this.defaultYamlConfig.getRustItem(RustItemType.RUST_CHARCOAL).getItem(), choice, 0, 60));
     }
 
     @Override

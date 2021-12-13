@@ -24,7 +24,7 @@ public class RustPlayer {
                 Logger.debug("Skipping hasRustItem, itemStack was not a RustItem.", Rust.INSTANCE);
                 continue;
             }
-            if (!RustItems.matches(itemStack, item)) {
+            if (RustItems.notMatches(itemStack, item)) {
                 Logger.debug("Skipping hasRustItem, itemStack did not match RustItemType (It was a " + RustItems.getItemType(itemStack).name(), Rust.INSTANCE);
                 continue;
             }
@@ -49,7 +49,7 @@ public class RustPlayer {
         final Inventory inventory = player.getInventory();
         for (final ItemStack stack : inventory.getContents()) {
             if (stack == null) continue;
-            if (!RustItems.matches(stack, type)) continue;
+            if (RustItems.notMatches(stack, type)) continue;
             int toRemove = stack.getAmount();
             stack.setAmount(stack.getAmount() - amount);
             amount -= toRemove;

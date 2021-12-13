@@ -1,4 +1,4 @@
-package com.burchard36.rust.events.event;
+package com.burchard36.rust.events.spigot;
 
 import com.burchard36.rust.Rust;
 import org.bukkit.event.EventHandler;

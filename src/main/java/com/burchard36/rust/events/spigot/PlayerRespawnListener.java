@@ -1,32 +1,27 @@
-package com.burchard36.rust.events.event;
+package com.burchard36.rust.events.spigot;
 
 import com.burchard36.rust.Rust;
-import org.bukkit.block.Block;
+import com.burchard36.rust.lib.RustItemType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
-public class InteractListener implements Listener {
+public record PlayerRespawnListener(Rust pluginInstance) implements Listener {
 
-    private final Rust pluginInstance;
-
-    public InteractListener(final Rust pluginInstance) {
+    public PlayerRespawnListener(final Rust pluginInstance) {
         this.pluginInstance = pluginInstance;
         this.pluginInstance.getServer().getPluginManager().registerEvents(this, pluginInstance);
     }
 
     @EventHandler
-    public void onInteract(final PlayerInteractEvent e) {
+    public void onRespawn(final PlayerRespawnEvent e) {
         final Player player = e.getPlayer();
-        final ItemStack stack = e.getItem();
-        final Block block = e.getClickedBlock();
+        player.getInventory().setItem(0, this.pluginInstance.getDefaultYamlConfig().getRustItem(RustItemType.ROCK).getItem());
     }
 
     public void unregister() {
         HandlerList.unregisterAll(this);
     }
-
 }
