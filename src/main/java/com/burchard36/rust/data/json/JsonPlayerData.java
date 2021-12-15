@@ -5,7 +5,6 @@ import com.burchard36.rust.Rust;
 import com.google.gson.annotations.SerializedName;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.UUID;
 
@@ -38,13 +37,25 @@ public class JsonPlayerData extends JsonDataFile {
         return Bukkit.getPlayer(UUID.fromString(this.uuid));
     }
 
-    // TODO: Hook this to ClanAPI so it sees if this clan actually exists or not
+    public final UUID getUniqueId() {
+        return UUID.fromString(this.uuid);
+    }
+
+    public final UUID getClanId() {
+        if (this.clanUuid.isEmpty() || this.clanUuid.isBlank()) return null;
+        return UUID.fromString(this.clanUuid);
+    }
+
     public boolean isInAClan(final Rust plugin) {
         if (!this.clanUuid.isBlank() || !this.clanUuid.isEmpty()) return false;
-        final JsonRustClan clan = plugin.getClanManager().getRustClan(UUID.fromString(this.clanUuid));
+        final JsonRustClan clan = this.getRustClan(plugin);
         if (clan != null) return true;
         this.clanUuid = "";
         return false;
+    }
+
+    public final JsonRustClan getRustClan(final Rust plugin) {
+        return plugin.getClanManager().getRustClan(UUID.fromString(this.clanUuid));
     }
 
 }

@@ -4,6 +4,8 @@ import com.burchard36.json.JsonDataFile;
 import com.burchard36.rust.Rust;
 import com.burchard36.rust.data.ClanRole;
 import com.google.gson.annotations.SerializedName;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,6 +18,12 @@ public class JsonRustClan extends JsonDataFile {
     @SerializedName(value = "clan_uuid")
     public String clanUuid;
 
+    @SerializedName(value = "clan_name")
+    public String clanName;
+
+    @SerializedName(value = "clanTag")
+    public String clanTag;
+
     @SerializedName(value = "main_clan_owner_uuid")
     public String clanOwner;
 
@@ -27,6 +35,8 @@ public class JsonRustClan extends JsonDataFile {
 
     @SerializedName(value = "clan_member_uuids")
     public List<String> clanMembers;
+
+    public transient List<UUID> invitedMembers = new ArrayList<>();
 
     public JsonRustClan(final UUID uuid) {
         super(Rust.INSTANCE, "/data/clans/" + uuid.toString() + ".json");
@@ -56,6 +66,12 @@ public class JsonRustClan extends JsonDataFile {
         list.addAll(this.getMemberUuids());
         list.add(UUID.fromString(this.clanOwner));
         return list;
+    }
+
+    public List<OfflinePlayer> getAllMembersAsOfflinePlayers() {
+        final List<OfflinePlayer> players = new ArrayList<>();
+        this.getAllMembers().forEach((member) -> players.add(Bukkit.getOfflinePlayer(member)));
+        return players;
     }
 
     public final boolean isMainOwner(final Player player) {
@@ -116,6 +132,10 @@ public class JsonRustClan extends JsonDataFile {
         return this.getRoleOf(authority).getWeight() > this.getRoleOf(toCheckAgainst).getWeight() || this.isMainOwner(authority);
     }
 
+    public final boolean canInvitePlayers(final UUID toCheck) {
+        return this.getRoleOf(toCheck).getWeight() >= ClanRole.MODERATOR.getWeight();
+    }
+
     public final void promotePlayer(final Player promoter, final UUID toPromote) {
         if (!this.isInThisClan(toPromote)) {
             promoter.sendMessage(convert("&c&oYou cannot promote this member because they are not in this clan"));
@@ -169,6 +189,33 @@ public class JsonRustClan extends JsonDataFile {
         this.addToRole(toDemote, nextRole);
         this.removeFromRole(toDemote, currentRole);
         demoter.sendMessage(convert("&a&oSuccessfully set the members role to: " + nextRole.name()));
+    }
+
+    public final void invitePlayer(final UUID invitee, final UUID toInvite) {
+        final Player inviter = Bukkit.getPlayer(invitee);
+        if (inviter == null) return;
+        if (!this.canInvitePlayers(invitee)) {
+            inviter.sendMessage(convert("&c&oYou dont have permissions to invite this player")); // ignore NPC, will never be null
+            return;
+        }
+
+        final JsonPlayerData toInviteData = Rust.INSTANCE.getPlayerDataManager().getPlayerData(toInvite);
+        if (toInviteData.isInAClan(Rust.INSTANCE)) {
+            inviter.sendMessage(convert("&c&oThis player is in a clan, you cannot invite them!"));
+            return;
+        }
+
+        if (this.invitedMembers.contains(toInvite)) {
+            inviter.sendMessage(convert("&c&oThis member already has a invite to this clan!"));
+            return;
+        }
+
+        this.invitedMembers.add(toInvite);
+        final Player invitedPlayer = Bukkit.getPlayer(toInvite);
+        if (invitedPlayer != null) {
+            invitedPlayer.sendMessage(convert("&a&oYou have received an invite to the clan &e&l&o: " + this.clanName + "&a&o. You were invited by &e&l&o: " + inviter.getName()));
+            invitedPlayer.sendMessage(convert("&a&oType &e&o/clan join " + this.clanName + "&a&o to accept this invite!"));
+        }
     }
 
     public final void transferOwnership(final UUID to) {

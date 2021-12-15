@@ -4,7 +4,15 @@ import com.burchard36.command.ApiCommand;
 import com.burchard36.rust.Rust;
 import com.burchard36.rust.data.json.JsonPlayerData;
 import com.burchard36.rust.managers.PlayerDataManager;
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.TabCompleteEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +27,7 @@ public class ClanCommandHandler {
 
     public ClanCommandHandler(final Rust pluginInstance) {
         this.pluginInstance = pluginInstance;
+
         final PlayerDataManager dataManager = this.pluginInstance.getPlayerDataManager();
         this.command = new ApiCommand("clan",
                 "Main clan command",
@@ -41,8 +50,6 @@ public class ClanCommandHandler {
                 });
 
     }
-
-    private void handleLeaveClan
 
     private void handleCreateClan(final JsonPlayerData data) {
         if (data.isInAClan(this.pluginInstance)) {
